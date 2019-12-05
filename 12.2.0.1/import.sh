@@ -1,0 +1,1 @@
+impdp system/QazWsx@localhost/ORCLPDB1 directory=ORACLE_HOME dumpfile=WITHOUTBLOB.dmp logfile=implog.log content=ALL FULL=y TABLE_EXISTS_ACTION=REPLACE

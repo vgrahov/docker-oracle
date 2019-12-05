@@ -189,6 +189,7 @@ fi;
 # Check whether database is up and running
 $ORACLE_BASE/$CHECK_DB_FILE
 if [ $? -eq 0 ]; then
+  $ORACLE_BASE/$IMPORT_SCRIPT
   echo "#########################"
   echo "DATABASE IS READY TO USE!"
   echo "#########################"

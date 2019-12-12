@@ -20,6 +20,7 @@ export ORACLE_SID=${1:-ORCLCDB}
 
 # Check whether ORACLE_PDB is passed on
 export ORACLE_PDB=${2:-ORCLPDB1}
+export ORACLE_CHARACTERSET=${3:-CL8MSWIN1251}
 
 # Auto generate ORACLE PWD if not passed on
 export ORACLE_PWD=QazWsx #${3:-"`openssl rand -base64 8`1"}
@@ -50,6 +51,7 @@ echo "LISTENER =
 (DESCRIPTION_LIST = 
   (DESCRIPTION = 
     (ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC1)) 
+
     (ADDRESS = (PROTOCOL = TCP)(HOST = 0.0.0.0)(PORT = 1521)) 
   ) 
 ) 
@@ -61,8 +63,8 @@ DIAG_ADR_ENABLED = off
 # Start LISTENER and run DBCA
 lsnrctl start &&
 dbca -silent -createDatabase -responseFile $ORACLE_BASE/dbca.rsp ||
- cat /opt/oracle/cfgtoollogs/dbca/$ORACLE_SID/$ORACLE_SID.log ||
- cat /opt/oracle/cfgtoollogs/dbca/$ORACLE_SID.log
+# cat /opt/oracle/cfgtoollogs/dbca/$ORACLE_SID/$ORACLE_SID.log ||
+# cat /opt/oracle/cfgtoollogs/dbca/$ORACLE_SID.log
 
 echo "$ORACLE_SID=localhost:1521/$ORACLE_SID" > $ORACLE_HOME/network/admin/tnsnames.ora
 echo "$ORACLE_PDB= 
@@ -81,6 +83,8 @@ sqlplus / as sysdba << EOF
    EXEC DBMS_XDB_CONFIG.SETGLOBALPORTENABLED (TRUE);
    exit;
 EOF
+
+$ORACLE_BASE/import.sh 
 
 # Remove temporary response file
 rm $ORACLE_BASE/dbca.rsp

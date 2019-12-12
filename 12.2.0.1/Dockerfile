@@ -33,6 +33,7 @@ ENV ORACLE_BASE=/opt/oracle \
     INSTALL_DIR=/opt/install \
     INSTALL_FILE_1="linuxx64_12201_database.zip" \
     INSTALL_RSP="db_inst.rsp" \
+    NETCA_RSP="netca.rsp" \
     CONFIG_RSP="dbca.rsp.tmpl" \
     PWD_FILE="setPassword.sh" \
     RUN_FILE="runOracle.sh" \
@@ -55,7 +56,7 @@ ENV PATH=$ORACLE_HOME/bin:$ORACLE_HOME/OPatch/:/usr/sbin:$PATH \
 # Copy files needed during both installation and runtime
 # -------------
 COPY $SETUP_LINUX_FILE $CHECK_SPACE_FILE $INSTALL_DIR/
-COPY $IMPORT_SCRIPT $RUN_FILE $START_FILE $CREATE_DB_FILE $CONFIG_RSP $PWD_FILE $CHECK_DB_FILE $USER_SCRIPTS_FILE $ORACLE_BASE/
+COPY $IMPORT_SCRIPT $NETCA_RSP $RUN_FILE $START_FILE $CREATE_DB_FILE $CONFIG_RSP $PWD_FILE $CHECK_DB_FILE $USER_SCRIPTS_FILE $ORACLE_BASE/
 
 RUN chmod ug+x $INSTALL_DIR/*.sh && \
     sync && \
@@ -102,18 +103,16 @@ COPY --chown=oracle:dba --from=builder $ORACLE_BASE $ORACLE_BASE
 
 USER root
 RUN $ORACLE_BASE/oraInventory/orainstRoot.sh && \
-    $ORACLE_HOME/root.sh
+    $ORACLE_HOME/root.sh && \
+    sed -i -e 's\:N\:Y\g' /etc/oratab 
 
 USER oracle
 COPY --chown=oracle:dba $DATA_PUMP_FILE $PUMP_DIR/
+RUN $ORACLE_BASE/$CREATE_DB_FILE; exit 0
 WORKDIR /home/oracle
-
-VOLUME ["$ORACLE_BASE/oradata"]
+#VOLUME ["$ORACLE_BASE/oradata"]
 EXPOSE 1521 5500
-
 HEALTHCHECK --interval=1m --start-period=5m \
    CMD "$ORACLE_BASE/$CHECK_DB_FILE" >/dev/null || exit 1
-
-
 # Define default command to start Oracle Database. 
 CMD exec  $ORACLE_BASE/$RUN_FILE

@@ -98,14 +98,14 @@ EOF
 # Check whether container has enough memory
 # Github issue #219: Prevent integer overflow,
 # only check if memory digits are less than 11 (single GB range and below) 
-if [ `cat /sys/fs/cgroup/memory/memory.limit_in_bytes | wc -c` -lt 11 ]; then
-   if [ `cat /sys/fs/cgroup/memory/memory.limit_in_bytes` -lt 2147483648 ]; then
-      echo "Error: The container doesn't have enough memory allocated."
-      echo "A database container needs at least 2 GB of memory."
-      echo "You currently only have $((`cat /sys/fs/cgroup/memory/memory.limit_in_bytes`/1024/1024/1024)) GB allocated to the container."
-      exit 1;
-   fi;
-fi;
+# if [ `cat /sys/fs/cgroup/memory/memory.limit_in_bytes | wc -c` -lt 11 ]; then
+#    if [ `cat /sys/fs/cgroup/memory/memory.limit_in_bytes` -lt 2147483648 ]; then
+#       echo "Error: The container doesn't have enough memory allocated."
+#       echo "A database container needs at least 2 GB of memory."
+#       echo "You currently only have $((`cat /sys/fs/cgroup/memory/memory.limit_in_bytes`/1024/1024/1024)) GB allocated to the container."
+#       exit 1;
+#    fi;
+# fi;
 
 # Check that hostname doesn't container any "_"
 # Github issue #711
@@ -188,8 +188,7 @@ fi;
 
 # Check whether database is up and running
 $ORACLE_BASE/$CHECK_DB_FILE
-if [ $? -eq 0 ]; then
-  $ORACLE_BASE/$IMPORT_SCRIPT
+#if [ $? -eq 0 ]; then
   echo "#########################"
   echo "DATABASE IS READY TO USE!"
   echo "#########################"
@@ -197,14 +196,14 @@ if [ $? -eq 0 ]; then
   # Execute custom provided startup scripts
   $ORACLE_BASE/$USER_SCRIPTS_FILE $ORACLE_BASE/scripts/startup
   
-else
-  echo "#####################################"
-  echo "########### E R R O R ###############"
-  echo "DATABASE SETUP WAS NOT SUCCESSFUL!"
-  echo "Please check output for further info!"
-  echo "########### E R R O R ###############" 
-  echo "#####################################"
-fi;
+#else
+#  echo "#####################################"
+#  echo "########### E R R O R ###############"
+#  echo "DATABASE SETUP WAS NOT SUCCESSFUL!"
+#  echo "Please check output for further info!"
+#  echo "########### E R R O R ###############" 
+#  echo "#####################################"
+#fi;
 
 # Tail on alert log and wait (otherwise container will exit)
 echo "The following output is now a tail of the alert.log:"

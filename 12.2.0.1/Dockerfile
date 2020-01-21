@@ -45,7 +45,7 @@ ENV ORACLE_BASE=/opt/oracle \
     USER_SCRIPTS_FILE="runUserScripts.sh" \
     IMPORT_SCRIPT="import.sh" \
     INSTALL_DB_BINARIES_FILE="installDBBinaries.sh" \
-    DATA_PUMP_FILE="WITHOUTBLOB.dmp" \
+    DATA_PUMP_FILE="EXPDAT.DMP" \
     PUMP_DIR=/opt/oracle/product/12.2.0.1/dbhome_1
 
 # Use second ENV so that variable get substituted

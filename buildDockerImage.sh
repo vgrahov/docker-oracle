@@ -23,6 +23,7 @@ Parameters:
    -x: creates image based on 'Express Edition'
    -i: ignores the MD5 checksums
    -o: passes on Docker build option
+   -d: datapump file
 
 * select one edition only: -e, -s, or -x
 
@@ -143,7 +144,7 @@ if [ "$VERSION" == "12.1.0.2" ] || [ "$VERSION" == "11.2.0.2" ] || [ "$VERSION" 
 fi;
 
 # Oracle Database Image Name
-IMAGE_NAME="oracle/database-test:$VERSION-$EDITION"
+IMAGE_NAME="oracle/database-new:$VERSION-$EDITION"
 
 # Go into version folder
 cd "$VERSION" || {
